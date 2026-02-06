@@ -134,6 +134,8 @@
 
     <!-- Script -->
 <script>
+    const API_BASE = `${window.location.origin}/api`;
+
 document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -145,7 +147,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let user;
 
     try {
-        const res = await fetch("http://localhost:3000/api/users/me", {
+        const res = await fetch(`${API_BASE}/users/me`, {
             headers: { "Authorization": `Bearer ${token}` }
         });
 
@@ -178,9 +180,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (profileEl && user.name) {
             if (user.profilePhoto) {
                 const img = document.createElement("img");
-                img.src = user.profilePhoto;
-                profileEl.innerHTML = "";
-                profileEl.appendChild(img);
+img.src = user.profilePhoto.replace('http://localhost:3000', window.location.origin);
+img.style.width = "100%";
+img.style.height = "100%";
+img.style.borderRadius = "50%";
+img.style.objectFit = "cover";
+profileEl.innerHTML = "";
+profileEl.appendChild(img);
             } else {
                 profileEl.innerText = user.name.charAt(0).toUpperCase();
             }
@@ -231,7 +237,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (file) formData.append("profilePhoto", file);
 
         try {
-            const res = await fetch(`http://localhost:3000/api/users/${user.id}`, {
+            const res = await fetch(`${API_BASE}/users/${user.id}`, {
                 method: "PUT",
                 headers: { "Authorization": `Bearer ${token}` }, // don't set Content-Type manually
                 body: formData

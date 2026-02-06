@@ -1,6 +1,6 @@
 // API base URL - use global from auth.js (loaded first)
 // Reference window.API_BASE directly to avoid redeclaration
-const API_BASE = window.API_BASE || 'https://konkanmart.onrender.com/api';
+const API_BASE = `${window.location.origin}/api`;
 
 let editingProductId = null;
 
@@ -82,7 +82,7 @@ function displayProducts(products) {
 
     productItem.innerHTML = `
         <div style="display:flex; align-items:flex-start; gap:10px;">
-            ${product.image ? `<img src="${product.image}" alt="${product.name}" style="width:100px;height:100px;object-fit:cover;">` : ''}
+${product.image ? `<img src="${product.image.replace('http://localhost:3000', window.location.origin)}" alt="${product.name}" style="width:100px;height:100px;object-fit:cover;">` : ''}
             <div>
                 <h3>${product.name}</h3>
                 <div style="color: #666; font-size: 14px;">${product.category} | ₹${product.price} | Stock: ${product.stock}</div>

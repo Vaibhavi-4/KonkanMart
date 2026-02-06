@@ -15,7 +15,7 @@ if (token && user && user.role === 'buyer') {
     }
 }
 
-const API_BASE = window.API_BASE || 'https://konkanmart.onrender.com/api';
+const API_BASE = `${window.location.origin}/api`;
 let selectedOrderIds = []; // store all order IDs
 let selectedOrderId = null; // optional, first order ID
 
@@ -100,7 +100,7 @@ function displayProducts(products) {
         }
 
         card.innerHTML = `
-            ${product.image ? `<img src="${product.image}" alt="${product.name}" style="width:120px;height:120px;object-fit:cover;margin-bottom:10px;">` : ''}
+${product.image ? `<img src="${product.image.replace('http://localhost:3000', window.location.origin)}" alt="${product.name}" style="width:120px;height:120px;object-fit:cover;margin-bottom:10px;">` : ''}
             <h3>${product.name}</h3>
             <div class="category">${product.category}</div>
             <div class="price">₹${product.price}</div>

@@ -122,9 +122,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const res = await fetch("http://localhost:3000/api/users/me", {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const API_BASE = `${window.location.origin}/api`;
+
+const res = await fetch(`${API_BASE}/users/me`, {
+  headers: { Authorization: `Bearer ${token}` }
+});
+
 
     const data = await res.json();
     if (!res.ok) throw new Error("Failed to fetch");
@@ -141,7 +144,7 @@ const profileCircle = document.getElementById("profileCircle");
 
 if (user.profilePhoto) {
     const img1 = document.createElement("img");
-    img1.src = user.profilePhoto; // URL from backend
+img1.src = user.profilePhoto.replace('http://localhost:3000', window.location.origin);
     img1.style.width = "100%";
     img1.style.height = "100%";
     img1.style.borderRadius = "50%";
@@ -150,7 +153,7 @@ if (user.profilePhoto) {
     profilePic.appendChild(img1);
 
     const img2 = document.createElement("img");
-    img2.src = user.profilePhoto;
+img2.src = user.profilePhoto.replace('http://localhost:3000', window.location.origin);
     img2.style.width = "100%";
     img2.style.height = "100%";
     img2.style.borderRadius = "50%";
