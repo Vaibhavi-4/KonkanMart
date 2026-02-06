@@ -1,0 +1,45 @@
+═══════════════════════════════════════════════════════════════
+  KONKAN MART - QUICK START GUIDE
+═══════════════════════════════════════════════════════════════
+
+STEP 1: Install Dependencies
+─────────────────────────────
+cd backend
+npm install
+
+STEP 2: Start Server
+────────────────────
+npm start
+
+You should see: "Konkan Mart backend running on http://localhost:3000"
+
+STEP 3: Open Browser
+────────────────────
+Go to: http://localhost:3000
+
+═══════════════════════════════════════════════════════════════
+  DEMO CREDENTIALS
+═══════════════════════════════════════════════════════════════
+
+Buyer:  buyer1   / password123
+Seller: seller1  / password123
+Admin:  admin    / password123
+
+═══════════════════════════════════════════════════════════════
+  FEATURES
+═══════════════════════════════════════════════════════════════
+
+✅ Three user roles (Buyer, Seller, Admin)
+✅ Product browsing with search & filter
+✅ Shopping cart with stock validation
+✅ Order management
+✅ Seller contact info visible
+✅ Offline payment workflow
+✅ Order tracking
+
+═══════════════════════════════════════════════════════════════
+
+For detailed instructions: See RUN_INSTRUCTIONS.md
+For project prompt: See PROJECT_PROMPT.md
+
+═══════════════════════════════════════════════════════════════

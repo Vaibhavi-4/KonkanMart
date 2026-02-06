@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Konkan Mart - My Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: #f4f7fb;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .initial-circle {
+      width: 40px;
+      height: 40px;
+      background: #21867a;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 60px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .profile-pic {
+      width: 90px;
+      height: 90px;
+      background: #21867a;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin: auto;
+      margin-bottom: 15px;
+    }
+
+    .info {
+      margin: 12px 0;
+      font-size: 16px;
+    }
+
+    .btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      background: #21867a;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+ <a href="buyer.html" style="text-decoration:none; color:inherit;">
+  <h2>Konkan Mart</h2>
+</a>
+
+  <div class="nav-links">
+    <span id="profileCircle" class="initial-circle"></span>
+    <button onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<div class="container">
+  <div id="profilePic" class="profile-pic"></div>
+
+  <h2 id="name"></h2>
+  <p class="info"><b>Email:</b> <span id="email"></span></p>
+  <p class="info"><b>Phone:</b> <span id="phone"></span></p>
+
+  <button class="btn" onclick="goEdit()">Edit Profile</button>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    alert("Please login first");
+    window.location.href = "login.html";
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:3000/api/users/me", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error("Failed to fetch");
+
+    const user = data.user;
+
+    document.getElementById("name").innerText = user.name;
+    document.getElementById("email").innerText = user.email;
+    document.getElementById("phone").innerText = user.contactInfo || "Not set";
+
+    // Profile Pic and Navbar Circle
+const profilePic = document.getElementById("profilePic");
+const profileCircle = document.getElementById("profileCircle");
+
+if (user.profilePhoto) {
+    const img1 = document.createElement("img");
+    img1.src = user.profilePhoto; // URL from backend
+    img1.style.width = "100%";
+    img1.style.height = "100%";
+    img1.style.borderRadius = "50%";
+    img1.style.objectFit = "cover";
+    profilePic.innerHTML = "";
+    profilePic.appendChild(img1);
+
+    const img2 = document.createElement("img");
+    img2.src = user.profilePhoto;
+    img2.style.width = "100%";
+    img2.style.height = "100%";
+    img2.style.borderRadius = "50%";
+    img2.style.objectFit = "cover";
+    profileCircle.innerHTML = "";
+    profileCircle.appendChild(img2);
+} else {
+    // fallback to initials
+    profilePic.innerText = user.name.charAt(0).toUpperCase();
+    profileCircle.innerText = user.name.charAt(0).toUpperCase();
+}
+
+  } catch (err) {
+    alert("Unable to load profile");
+  }
+});
+
+function goEdit() {
+  window.location.href = "profileUpdate.html";
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>

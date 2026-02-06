@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konkan Mart - Buyer Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" style="text-decoration:none; color:inherit;">
+  <h2>Konkan Mart</h2>
+</a>
+
+        <div class="nav-links">
+            <span id="userName"></span>
+            <span id="profileCircle" class="initial-circle" style="cursor:pointer;"></span>
+
+            <button onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-header">
+  <h1>Buyer Dashboard</h1>
+
+  <div class="header-actions">
+    <div class="cart-badge" onclick="showCart()">
+     My Cart (<span id="cartCount">0</span>)
+    </div>
+
+    <div class="cart-badge" onclick="showOrders()">
+    My Orders
+    </div>
+  </div>
+</div>
+
+
+        <!-- Search and Filter -->
+        <div class="filters">
+            <input type="text" id="searchInput" placeholder="Search products..." onkeyup="filterProducts()">
+            <select id="categoryFilter" onchange="filterProducts()">
+                <option value="">All Categories</option>
+            </select>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="productsGrid" class="products-grid"></div>
+
+        <!-- Cart Modal -->
+        <div id="cartModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeCart()">&times;</span>
+                <h2>Your Cart</h2>
+                <div id="cartItems"></div>
+                <div class="cart-total">
+                    <strong>Total: Rs <span id="cartTotal">0</span></strong>
+                </div>
+                <button onclick="checkout()" class="btn-primary">Proceed to Checkout</button>
+            </div>
+        </div>
+
+        <!-- Orders Modal -->
+<div id="ordersModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeOrders()">&times;</span>
+    <h2>My Orders</h2>
+    <div id="ordersList"></div>
+  </div>
+</div>
+
+
+        <!-- Checkout Modal -->
+        <div id="checkoutModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeCheckout()">&times;</span>
+                <h2>Checkout</h2>
+                <textarea id="deliveryAddress" placeholder="Enter delivery address" rows="4" required></textarea>
+                <div id="checkoutSellerInfo" style="margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 5px; font-size: 12px;"></div>
+                <p class="info" style="margin-top: 15px;">
+                    <strong>Note:</strong> After placing order, contact the seller using the contact details above to confirm and complete payment offline.
+                </p>
+                <hr>
+<h3>Select Payment Method</h3>
+
+<div class="payment-methods">
+  <div class="payment-option active" onclick="selectPayment('ONLINE')">
+    <span>Online (Scan & Pay)</span>
+  </div>
+
+  <div class="payment-option" onclick="selectPayment('COD')">
+    <span>Cash on Delivery</span>
+  </div>
+</div>
+
+<input type="hidden" id="paymentMode" value="ONLINE">
+
+
+<div id="onlinePaymentSection">
+  <h3>Scan & Pay</h3>
+  <img src="Qrcode.jpg" alt="QR Code" style="width:180px;margin:10px auto;display:block;">
+  <label>Upload Payment Screenshot</label>
+  <input type="file" id="paymentProof" accept="image/*">
+</div>
+
+
+<br><br>
+<button onclick="submitPayment()" class="btn-primary">Place Order</button>
+
+
+            </div>
+        </div>
+
+        <!-- Orders Section -->
+        <!-- <div class="orders-section">
+            <h2>My Orders</h2>
+            <div id="ordersList"></div>
+        </div>
+    </div> --><span id="welcomeUser"></span>
+
+
+    <script src="auth.js"></script>
+    <script src="buyer.js"></script>
+    <script>
+async function loadBuyerNavbar() {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const res = await fetch("http://localhost:3000/api/users/me", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const data = await res.json();
+    if (!res.ok) return;
+
+    const user = data.user;
+    const profileEl = document.getElementById("profileCircle");
+    const welcomeEl = document.getElementById("welcomeUser");
+
+    if (welcomeEl) {
+      welcomeEl.innerText = `Welcome, ${user.name}`;
+    }
+
+    if (profileEl) {
+      profileEl.innerHTML = "";
+
+      if (user.profilePhoto) {
+        const img = document.createElement("img");
+        img.src = user.profilePhoto;
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.style.borderRadius = "50%";
+        img.style.objectFit = "cover";
+        profileEl.appendChild(img);
+      } else {
+        profileEl.innerText = user.name.charAt(0).toUpperCase();
+      }
+
+      profileEl.onclick = () => window.location.href = "profile.html";
+    }
+
+  } catch (err) {
+    console.log("Navbar error:", err);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadBuyerNavbar);
+</script>
+
+
+
+</body>
+</html>

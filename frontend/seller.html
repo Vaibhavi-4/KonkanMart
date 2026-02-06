@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konkan Mart - Seller Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" style="text-decoration:none; color:inherit;">
+  <h2>Konkan Mart</h2>
+</a>
+
+        <div class="nav-links">
+            <span id="userName"></span>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>Seller Dashboard</h1>
+            <button onclick="showAddProduct()" class="btn-primary">+ Add Product</button>
+        </div>
+
+        <!-- Add Product Modal -->
+        <div id="addProductModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAddProduct()">&times;</span>
+                <h2>Add New Product</h2>
+                <input type="text" id="productName" placeholder="Product Name" required>
+                <select id="productCategory" required>
+                    <option value="">Select Category</option>
+                </select>
+                <input type="number" id="productPrice" placeholder="Price (₹)" step="0.01" required>
+                <textarea id="productDescription" placeholder="Description" rows="3" required></textarea>
+<label for="productImage">Image URL:</label>
+<input type="text" id="productImage" placeholder="Enter image URL" />
+
+                <input type="number" id="productStock" placeholder="Stock Quantity" required>
+                <button type="button" onclick="addProduct()" class="btn-primary">Add Product</button>
+            </div>
+        </div>
+
+        <!-- Edit Product Modal -->
+        <div id="editProductModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeEditProduct()">&times;</span>
+                <h2>Edit Product</h2>
+                <input type="text" id="editProductName" placeholder="Product Name" required>
+                <select id="editProductCategory" required></select>
+                <input type="number" id="editProductPrice" placeholder="Price (₹)" step="0.01" required>
+                <textarea id="editProductDescription" placeholder="Description" rows="3" required></textarea>
+                <label for="editProductImage">Image URL:</label>
+<input type="text" id="editProductImage" placeholder="Enter image URL" />
+
+                <input type="number" id="editProductStock" placeholder="Stock Quantity" required>
+                <button type="button" onclick="updateProduct()" class="btn-primary">Update Product</button>
+            </div>
+        </div>
+
+        <!-- Products List -->
+        <div class="products-section">
+            <h2>My Products</h2>
+            <div id="productsList"></div>
+        </div>
+
+        <!-- Orders Section -->
+        <div class="orders-section">
+            <h2>Orders</h2>
+            <div id="ordersList"></div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="seller.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "konkan-mart-backend",
+  "version": "1.0.0",
+  "description": "Backend for Konkan Mart e-commerce POC",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "seed": "node seed.js",
+    "test": "node test-api.js",
+    "stop": "taskkill /F /IM node.exe 2>$null; exit 0",
+    "restart": "npm run stop && timeout /t 1 /nobreak >nul && npm start"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.22.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^6.3.0",
+    "mongoose": "^8.21.0",
+    "multer": "^2.0.2",
+    "nodemailer": "^7.0.12",
+    "path": "^0.12.7"
+  }
+}

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konkan Mart - Profile Update</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Basic styling for profile page */
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f7f9fc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .btn-primary {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #21867a;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: white;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .initial-circle {
+            width: 40px;
+            height: 40px;
+            background: #21867a;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        button {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="profile.html" style="text-decoration:none; color:inherit;">
+  <h2>Konkan Mart</h2>
+</a>
+
+        <div class="nav-links">
+            <span id="profileCircle" class="initial-circle"></span>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Container -->
+    <div class="container">
+        <h1>Update Your Profile</h1>
+
+        <form id="profileForm">
+            <div class="form-group">
+    <label for="profilePhoto">Profile Photo:</label>
+    <input type="file" id="profilePhoto" accept="image/*">
+</div>
+
+            <div class="form-group">
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" >
+            </div>
+
+            <button type="submit" class="btn-primary">Update Profile</button>
+        </form>
+    </div>
+
+    <!-- Script -->
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("Please login first!");
+        window.location.href = "login.html";
+        return;
+    }
+
+    let user;
+
+    try {
+        const res = await fetch("http://localhost:3000/api/users/me", {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.user) {
+            console.warn("Could not fetch user info, but staying on page");
+            return; // don't redirect immediately
+        }
+
+        user = data.user;
+
+        // Prefill form
+        document.getElementById("name").value = user.name || "";
+        document.getElementById("email").value = user.email || "";
+        document.getElementById("phone").value = user.contactInfo || "";
+
+        // Save in localStorage
+        localStorage.setItem("user", JSON.stringify({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            phone: user.contactInfo || ""
+        }));
+
+        const profileEl = document.getElementById("profileCircle");
+        const profilePhotoInput = document.getElementById("profilePhoto");
+
+        // Show profile photo if exists
+        if (profileEl && user.name) {
+            if (user.profilePhoto) {
+                const img = document.createElement("img");
+                img.src = user.profilePhoto;
+                profileEl.innerHTML = "";
+                profileEl.appendChild(img);
+            } else {
+                profileEl.innerText = user.name.charAt(0).toUpperCase();
+            }
+
+            profileEl.addEventListener("click", () => {
+                window.location.href = "profile.html";
+            });
+        }
+
+        // Preview selected photo
+        if (profilePhotoInput) {
+            profilePhotoInput.addEventListener("change", (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const maxSize = 2 * 1024 * 1024; // 2 MB
+                if (file.size > maxSize) {
+                    alert("File too large! Max 2MB.");
+                    profilePhotoInput.value = "";
+                    return;
+                }
+
+                const img = document.createElement("img");
+                img.src = URL.createObjectURL(file);
+                profileEl.innerHTML = "";
+                profileEl.appendChild(img);
+            });
+        }
+
+    } catch (err) {
+        console.error("Fetch error:", err);
+        alert("Unable to fetch profile info. Try again later.");
+    }
+
+    // Handle profile update
+    document.getElementById("profileForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append("name", document.getElementById("name").value);
+        formData.append("email", document.getElementById("email").value);
+        formData.append("phone", document.getElementById("phone").value);
+
+        const password = document.getElementById("password").value;
+        if (password) formData.append("password", password);
+
+        const file = document.getElementById("profilePhoto").files[0];
+        if (file) formData.append("profilePhoto", file);
+
+        try {
+            const res = await fetch(`http://localhost:3000/api/users/${user.id}`, {
+                method: "PUT",
+                headers: { "Authorization": `Bearer ${token}` }, // don't set Content-Type manually
+                body: formData
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Failed to update profile");
+
+            // Update navbar circle
+            const profileEl = document.getElementById("profileCircle");
+            if (file) {
+                const img = document.createElement("img");
+                img.src = URL.createObjectURL(file);
+                profileEl.innerHTML = "";
+                profileEl.appendChild(img);
+            } else {
+                profileEl.innerText = data.user.name.charAt(0).toUpperCase();
+            }
+
+            alert("Profile updated successfully!");
+        } catch (err) {
+            alert(err.message);
+        }
+    });
+});
+
+// Logout
+function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.href = "login.html";
+}
+
+</script>
+
+
+</body>
+</html>

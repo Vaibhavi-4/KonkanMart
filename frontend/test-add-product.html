@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Add Product</title>
+</head>
+<body>
+    <h1>Test Add Product Functionality</h1>
+    <button onclick="testAddProduct()">Test Add Product API</button>
+    <div id="result"></div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+        
+        async function testAddProduct() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                // First login as seller
+                const loginResponse = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: 'seller1',
+                        password: 'password123'
+                    })
+                });
+                
+                if (!loginResponse.ok) {
+                    resultDiv.innerHTML = 'Login failed';
+                    return;
+                }
+                
+                const loginData = await loginResponse.json();
+                const token = loginData.token;
+                
+                resultDiv.innerHTML += '<br>Login successful. Token: ' + token.substring(0, 20) + '...';
+                
+                // Now try to add product
+                const productData = {
+                    name: 'Test Product from Frontend',
+                    category: 'Spice Kits',
+                    price: 199,
+                    description: 'Test description',
+                    stock: 10
+                };
+                
+                resultDiv.innerHTML += '<br>Adding product: ' + JSON.stringify(productData);
+                
+                const addResponse = await fetch(`${API_BASE}/products`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(productData)
+                });
+                
+                resultDiv.innerHTML += '<br>Response status: ' + addResponse.status;
+                
+                const addData = await addResponse.json();
+                resultDiv.innerHTML += '<br>Response data: ' + JSON.stringify(addData, null, 2);
+                
+                if (addResponse.ok) {
+                    resultDiv.innerHTML += '<br><strong style="color: green;">SUCCESS!</strong>';
+                } else {
+                    resultDiv.innerHTML += '<br><strong style="color: red;">FAILED!</strong>';
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML += '<br><strong style="color: red;">ERROR: ' + error.message + '</strong>';
+                console.error('Test error:', error);
+            }
+        }
+    </script>
+</body>
+</html>
