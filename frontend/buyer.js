@@ -15,7 +15,7 @@ if (token && user && user.role === 'buyer') {
     }
 }
 
-const API_BASE = window.API_BASE || 'http://localhost:3000/api';
+const API_BASE = window.API_BASE || 'https://konkanmart.onrender.com/api';
 let selectedOrderIds = []; // store all order IDs
 let selectedOrderId = null; // optional, first order ID
 

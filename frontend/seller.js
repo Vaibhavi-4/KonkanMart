@@ -1,6 +1,6 @@
 // API base URL - use global from auth.js (loaded first)
 // Reference window.API_BASE directly to avoid redeclaration
-const API_BASE = window.API_BASE || 'http://localhost:3000/api';
+const API_BASE = window.API_BASE || 'https://konkanmart.onrender.com/api';
 
 let editingProductId = null;
 
