@@ -1,6 +1,6 @@
 // API base URL (global) - set once, use everywhere
 if (!window.API_BASE) {
-    window.API_BASE = 'http://localhost:3000/api';
+    window.API_BASE = 'https://konkanmart.onrender.com/api';
 }
 
 // Check if user is authenticated

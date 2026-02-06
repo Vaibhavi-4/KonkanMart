@@ -858,6 +858,6 @@ app.get('/api/categories', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Konkan Mart backend running on http://localhost:${PORT}`);
+  console.log(`Konkan Mart backend running on port ${PORT}`);
   console.log(`MongoDB: Make sure MongoDB is running on mongodb://localhost:27017`);
 });
