@@ -416,8 +416,13 @@ function displayOrders(orders) {
         
         let actionButtons = '';
         if (order.status === 'pending') {
-            actionButtons = `<button class="btn-success" onclick="approveOrder('${order.id}')">Approve Order</button>`;
-        } else if (order.status === 'approved') {
+    actionButtons = `
+      <button class="btn-success" onclick="approveOrder('${order.id}')">
+        ${order.paymentMethod === 'COD' ? 'Approve COD Order' : 'Approve Order'}
+      </button>
+    `;
+}
+ else if (order.status === 'approved') {
     actionButtons = `
         <div style="margin-top:10px; display:flex; flex-direction:column; gap:6px;">
             <input type="text" id="partner-${order.id}" placeholder="Delivery Partner Number">
@@ -441,8 +446,19 @@ function displayOrders(orders) {
             <div><strong>Total:</strong> ₹${order.totalAmount}</div>
             <div style="margin-top: 10px;"><strong>Delivery Address:</strong> ${order.deliveryAddress}</div>
 <div style="margin-top: 5px;">
-    <strong>Payment:</strong> ${order.paymentStatus}
+    <strong>Payment:</strong> 
+    ${order.paymentMode === "COD" ? `
+  <div style="margin-top:6px;color:green">
+    💵 COD Order – Collect cash on delivery
+  </div>
+` : `
+  <div style="margin-top:6px;color:blue">
+    💳 Online Payment – Verify screenshot
+  </div>
+`}
+
 </div>
+
 
 ${order.paymentProof ? `
     <div style="margin-top:10px">

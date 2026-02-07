@@ -174,6 +174,12 @@ async function addToCart(productId) {
         quantityInput.value = 1;
         return;
     }
+    if (quantity > 10) {
+  alert("You can order maximum 10 items per product.");
+  quantityInput.value = 10;
+  return;
+}
+
     
     // Get current product stock to validate
     try {
@@ -226,6 +232,7 @@ async function loadCart() {
         
         const cart = await response.json();
         document.getElementById('cartCount').textContent = cart.length;
+        updateCheckoutButton(cart);
     } catch (error) {
         console.error('Error loading cart:', error);
     }
@@ -250,6 +257,7 @@ async function showCart() {
         if (cart.length === 0) {
             cartItems.innerHTML = '<p>Your cart is empty</p>';
             document.getElementById('cartTotal').textContent = '0';
+            updateCheckoutButton(cart);
             return;
         }
         
@@ -271,6 +279,7 @@ async function showCart() {
         });
         
         document.getElementById('cartTotal').textContent = total.toFixed(2);
+        updateCheckoutButton(cart);
     } catch (error) {
         console.error('Error loading cart:', error);
     }
@@ -303,6 +312,14 @@ async function checkout() {
     document.getElementById('cartModal').style.display = 'none';
     document.getElementById('checkoutModal').style.display = 'block';
     
+    const cartRes = await fetch(`${API_BASE}/cart`, { headers: getAuthHeaders() });
+const cartData = await cartRes.json();
+
+if (!cartData || cartData.length === 0) {
+  alert("Your cart is empty 🛒");
+  return;
+}
+
     // Load seller info for items in cart
     try {
         const cartResponse = await fetch(`${API_BASE}/cart`, {
@@ -505,6 +522,11 @@ const mode = document.getElementById("paymentMode")?.value || "ONLINE";
         alert('Please enter delivery address');
         return;
     }
+    if (address.length < 10) {
+  alert("Please enter a complete delivery address.");
+  return;
+}
+
 
     if (mode === "ONLINE" && (!fileInput || !fileInput.files[0])) {
         alert('Please upload payment screenshot');
@@ -722,8 +744,18 @@ if (order.status === 'shipped') {
             </div>
             <div><strong>Total:</strong> ₹${order.totalAmount}</div>
             <div style="margin-top: 10px;"><strong>Address:</strong> ${order.deliveryAddress}</div>
-            <div style="margin-top: 5px;"><strong>Payment Status:</strong> ${order.paymentStatus}</div>
-            <div><strong>Payment Mode:</strong> ${order.paymentMode}</div>
+<div style="margin-top:5px">
+  <strong>Payment Status:</strong> 
+  ${order.paymentMode === "COD" 
+    ? "Pay when item is delivered" 
+    : order.paymentStatus}
+</div>
+<div>
+  <strong>Payment Mode:</strong> 
+  ${order.paymentMode === "COD" 
+    ? `<span style="color:green;font-weight:600">💵 Cash On Delivery</span>` 
+    : `<span style="color:blue;font-weight:600">💳 Online Payment</span>`}
+</div>
             
             ${order.status === 'approved' && order.estimatedShipDate ? `
   <div style="margin-top:6px;color:green;font-weight:500">
@@ -771,4 +803,16 @@ function showOrders() {
 
 function closeOrders() {
   document.getElementById("ordersModal").style.display = "none";
+}
+function updateCheckoutButton(cart) {
+  const btn = document.getElementById("checkoutBtn");
+  if (!btn) return;
+
+  if (!cart || cart.length === 0) {
+    btn.disabled = true;
+    btn.innerText = "Cart is Empty";
+  } else {
+    btn.disabled = false;
+    btn.innerText = "Proceed to Checkout";
+  }
 }

@@ -330,6 +330,25 @@ app.post('/api/products', verifyToken, checkRole('seller'), async (req, res) => 
     if (!name || !category || !price || !description) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
+    name = name.trim();
+    description = description.trim();
+
+    // ✅ LIMITS
+    if (name.length > 80)
+      return res.status(400).json({ error: 'Product name too long (max 80 chars)' });
+
+    if (description.length > 300)
+      return res.status(400).json({ error: 'Description too long (max 300 chars)' });
+
+    price = parseFloat(price);
+    stock = parseInt(stock);
+
+    if (isNaN(price) || price <= 0 || price > 1000000)
+      return res.status(400).json({ error: 'Invalid price range' });
+
+    if (isNaN(stock) || stock < 1 || stock > 10000)
+      return res.status(400).json({ error: 'Stock must be between 1 and 10000' });
+
 
     const sellerId = new mongoose.Types.ObjectId(req.user.id);
 
@@ -367,23 +386,54 @@ app.post('/api/products', verifyToken, checkRole('seller'), async (req, res) => 
 app.put('/api/products/:id', verifyToken, checkRole('seller'), async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ error: 'Product not found' });
-    }
+    if (!product) return res.status(404).json({ error: 'Product not found' });
 
     if (product.sellerId.toString() !== req.user.id.toString()) {
       return res.status(403).json({ error: 'Not your product' });
     }
 
-    Object.assign(product, req.body);
+    let { name, category, price, description, stock, image } = req.body;
+
+    if (!name || !category || !price || !description) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    name = name.trim();
+    description = description.trim();
+
+    // ✅ LIMITS
+    if (name.length > 80)
+      return res.status(400).json({ error: 'Product name too long (max 80 chars)' });
+
+    if (description.length > 300)
+      return res.status(400).json({ error: 'Description too long (max 300 chars)' });
+
+    price = parseFloat(price);
+    stock = parseInt(stock);
+
+    if (isNaN(price) || price <= 0 || price > 1000000)
+      return res.status(400).json({ error: 'Invalid price range' });
+
+    if (isNaN(stock) || stock < 1 || stock > 10000)
+      return res.status(400).json({ error: 'Stock must be between 1 and 10000' });
+
+    product.name = name;
+    product.category = category;
+    product.price = price;
+    product.description = description;
+    product.stock = stock;
+    product.image = image || null;
+
     await product.save();
 
     res.json(formatResponse(product));
+
   } catch (error) {
     console.error('Update product error:', error);
     res.status(500).json({ error: 'Failed to update product' });
   }
 });
+
 
 app.delete('/api/products/:id', verifyToken, checkRole('seller'), async (req, res) => {
   try {
