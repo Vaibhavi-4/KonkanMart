@@ -187,3 +187,20 @@ if (window.location.pathname !== '/index.html' && window.location.pathname !== '
         document.getElementById('userName').textContent = auth.user.name || auth.user.username;
     }
 }
+// Enable Enter key for login & register
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+
+        // If login form is visible
+        if (loginForm && loginForm.style.display !== 'none') {
+            login();
+        }
+
+        // If register form is visible
+        if (registerForm && registerForm.style.display !== 'none') {
+            register();
+        }
+    }
+});

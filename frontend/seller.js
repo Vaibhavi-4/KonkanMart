@@ -70,6 +70,7 @@ function displayProducts(products) {
         productsList.innerHTML = '<p>No products yet. Add your first product!</p>';
         return;
     }
+    products.sort((a, b) => a.stock - b.stock);
 
    products.forEach(product => {
     const productItem = document.createElement('div');
@@ -85,14 +86,29 @@ function displayProducts(products) {
 ${product.image ? `<img src="${product.image.replace('http://localhost:3000', window.location.origin)}" alt="${product.name}" style="width:100px;height:100px;object-fit:cover;">` : ''}
             <div>
                 <h3>${product.name}</h3>
-                <div style="color: #666; font-size: 14px;">${product.category} | ₹${product.price} | Stock: ${product.stock}</div>
+<div style="color: #666; font-size: 14px;">
+  ${product.category} | ₹${product.price} | 
+  Stock: ${product.stock}
+  ${product.stock === 0 
+ ? `<span style="margin-left:6px;color:#b00020;font-weight:700;">Out of Stock</span>` 
+ : product.stock < 5 
+ ? `<span style="margin-left:6px;color:red;font-weight:600;">Low Stock</span>` 
+ : ''
+}
+
+</div>
                 <div style="color: #666; font-size: 12px; margin-top: 5px;">${product.description}</div>
             </div>
         </div>
         <div style="display:flex; flex-direction:column; gap:5px;">
-            <button class="btn-primary" onclick="editProduct('${product.id}')">Edit</button>
-            <button class="btn-danger" onclick="deleteProduct('${product.id}')">Delete</button>
-        </div>
+    <button class="btn-primary" 
+        ${product.stock === 0 ? 'disabled' : ''} 
+        onclick="editProduct('${product.id}')">
+        Edit
+    </button>
+    <button class="btn-danger" onclick="deleteProduct('${product.id}')">Delete</button>
+</div>
+
     `;
 
     productsList.appendChild(productItem);
@@ -143,6 +159,11 @@ async function addProduct() {
         alert('Please enter a valid price');
         return;
     }
+    if (parseFloat(price) > 1000000) {
+    alert('Price too high');
+    return;
+}
+
     
     if (!description) {
         alert('Please enter product description');
@@ -150,14 +171,27 @@ async function addProduct() {
     }
     
     const stockNum = parseInt(stock);
-    if (stock === '' || isNaN(stockNum) || stockNum < 0) {
-        alert('Please enter a valid stock quantity (0 or greater)');
-        return;
-    }
+
+if (isNaN(stockNum)) {
+    alert('Stock must be a number');
+    return;
+}
+
+if (stockNum < 1) {
+    alert('Stock must be at least 1');
+    return;
+}
+
+if (stockNum > 10000) {
+    alert('Stock cannot exceed 10000 units');
+    return;
+}
+
     
      // Check existing products first
     const productsListDiv = document.getElementById('productsList');
-    const existing = Array.from(productsListDiv.querySelectorAll('h3')).find(h3 => h3.textContent === name);
+const existing = Array.from(productsListDiv.querySelectorAll('h3'))
+  .find(h3 => h3.textContent.toLowerCase() === name.toLowerCase());
     if (existing) {
         alert("You already have this product! Update the stock instead.");
         return;
@@ -273,6 +307,23 @@ async function updateProduct() {
     const image = document.getElementById('editProductImage').value.trim();
 
     if (!name || !category || !price || !description) return alert('Please fill all required fields');
+
+    const stockNum = parseInt(stock);
+
+if (isNaN(stockNum)) {
+    alert('Stock must be a number');
+    return;
+}
+
+if (stockNum < 1) {
+    alert('Stock must be at least 1');
+    return;
+}
+
+if (stockNum > 10000) {
+    alert('Stock cannot exceed 10000 units');
+    return;
+}
 
     try {
         const requestBody = {
