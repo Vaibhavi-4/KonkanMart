@@ -110,7 +110,7 @@ function showAddProduct() {
     document.getElementById('productCategory').value = '';
     document.getElementById('productPrice').value = '';
     document.getElementById('productDescription').value = '';
-    document.getElementById('productStock').value = '0';
+    document.getElementById('productStock').value = '1';
     // Focus on first field
     document.getElementById('productName').focus();
 }

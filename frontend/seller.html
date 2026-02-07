@@ -29,7 +29,13 @@
             <div class="modal-content">
                 <span class="close" onclick="closeAddProduct()">&times;</span>
                 <h2>Add New Product</h2>
-                <input type="text" id="productName" placeholder="Product Name" required>
+<input 
+  type="text" 
+  id="productName" 
+  placeholder="Product Name" 
+  required 
+  oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
+/>
                 <select id="productCategory" required>
                     <option value="">Select Category</option>
                 </select>
@@ -38,7 +44,14 @@
 <label for="productImage">Image URL:</label>
 <input type="text" id="productImage" placeholder="Enter image URL" />
 
-                <input type="number" id="productStock" placeholder="Stock Quantity" required>
+<input 
+    type="number" 
+    id="productStock" 
+    placeholder="Stock Quantity" 
+    min="1" 
+    step="1" 
+    required
+>
                 <button type="button" onclick="addProduct()" class="btn-primary">Add Product</button>
             </div>
         </div>
@@ -48,14 +61,27 @@
             <div class="modal-content">
                 <span class="close" onclick="closeEditProduct()">&times;</span>
                 <h2>Edit Product</h2>
-                <input type="text" id="editProductName" placeholder="Product Name" required>
+<input 
+  type="text" 
+  id="editProductName" 
+  placeholder="Product Name" 
+  required 
+  oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
+/>
                 <select id="editProductCategory" required></select>
                 <input type="number" id="editProductPrice" placeholder="Price (₹)" step="0.01" required>
                 <textarea id="editProductDescription" placeholder="Description" rows="3" required></textarea>
                 <label for="editProductImage">Image URL:</label>
 <input type="text" id="editProductImage" placeholder="Enter image URL" />
 
-                <input type="number" id="editProductStock" placeholder="Stock Quantity" required>
+<input 
+    type="number" 
+    id="editProductStock" 
+    placeholder="Stock Quantity" 
+    min="1" 
+    step="1"
+    required
+>
                 <button type="button" onclick="updateProduct()" class="btn-primary">Update Product</button>
             </div>
         </div>

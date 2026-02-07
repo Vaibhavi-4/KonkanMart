@@ -727,30 +727,31 @@ a {
 }
 
 .hero-content {
-  background: rgba(255, 240, 200, 0.75);
-  backdrop-filter: blur(6px);
-  padding: 45px 55px;
-  border-radius: 18px;
+  background: none;
+  padding: 0;
+  border-radius: 0;
   text-align: center;
   max-width: 600px;
-  color: #3a2f1c;
+  color: #ffffff;
   position: relative;
   z-index: 3;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.7);
 }
+
 
 
 .hero-content h1 {
-  font-size: 2.2rem;
+  font-size: 2.4rem;
   margin-bottom: 15px;
-  color: #2b1e0f;
+  color: #ffffff;
 }
 
 .hero-content p {
-  font-size: 1rem;
-  color: #5a4a32;
+  font-size: 1.05rem;
+  color: #f1f1f1;
   line-height: 1.6;
 }
+
 
 .hero-content .btn {
   padding: 12px 24px;
@@ -950,3 +951,22 @@ footer {
   background: #fcfcff;
   text-align: center;
 }
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  appearance: textfield;
+}
+
