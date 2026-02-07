@@ -9,6 +9,7 @@ body {
     background: #f7f9fc;
     min-height: 100vh;
     color: #222;
+    overflow-x: hidden;
 }
 
 
@@ -18,39 +19,39 @@ body {
     padding: 20px;
 }
 
-/* Navbar */
+/* ===== NAVBAR ===== */
 .navbar {
-    background: #ffffff;
-    padding: 18px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+  background: #ffffff;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  flex-wrap: wrap;
 }
 
 .navbar h2 {
-    color: #e53935;
-    /* font-weight: 700; */
-    font-size: 1.8rem;
-  font-weight: bold;
-  color: #e63946;
+  margin: 0;
+  font-size: 1.6rem;
+  color: #e53935;
 }
 
-
 .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .nav-links button {
-    padding: 9px 22px;
-    background: #0ea5a4;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
+  background: #0fa3a2;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
 }
 
 .nav-links button:hover {
@@ -233,11 +234,11 @@ body {
 }
 
 .product-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: contain;
-    border-radius: 14px;
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
 }
+
 
 .product-card .price {
     font-size: 20px;
@@ -306,16 +307,6 @@ body {
     color: #000;
 }
 
-.modal-content input,
-.modal-content select,
-.modal-content textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 2px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
-}
 
 .btn-primary {
     background: #0ea5a4;
@@ -519,18 +510,21 @@ table tr:hover {
         padding: 25px;
         width: 100%;
     }
-
-    .navbar {
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
-    }
-
-    .nav-links {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
 }
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+    padding: 15px;
+  }
+
+  .nav-links {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
 
 @media (max-width: 600px) {
     body {
@@ -648,7 +642,7 @@ a {
   color: inherit;
 }
 
-.navbar {
+/* .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -657,17 +651,17 @@ a {
   z-index: 20;
   background-color: rgba(255, 255, 255, 0.9);
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
+} */
 .logo {
   font-size: 1.8rem;
   font-weight: bold;
   color: #e63946;
 }
-.nav-links {
+/* .nav-links {
   list-style: none;
   display: flex;
   gap: 30px;
-}
+} */
 .nav-links li a {
   font-size: 1rem;
   padding: 5px 0;
@@ -970,3 +964,108 @@ input[type=number] {
   appearance: textfield;
 }
 
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 15px 20px;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .nav-links {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .initial-circle {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+}
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+  }
+
+  .header-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .cart-badge {
+    width: 100%;
+  }
+}
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .filters input,
+  .filters select {
+    width: 100%;
+  }
+}
+@media (max-width: 600px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .product-card img {
+    height: 170px;
+  }
+
+  .product-card h3 {
+    font-size: 1.1rem;
+  }
+}
+@media (max-width: 600px) {
+  .modal-content {
+    width: 92%;
+    margin: 20px auto;
+    padding: 18px;
+  }
+}
+@media (max-width: 600px) {
+  .hero-content h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero-content p {
+    font-size: 0.95rem;
+  }
+}
+@media (max-width: 768px) {
+  footer {
+    flex-direction: column;
+    gap: 25px;
+    text-align: center;
+    padding: 40px 20px;
+  }
+}
+@media (max-width: 600px) {
+  button {
+    min-height: 44px;
+    font-size: 15px;
+  }
+}
+@media (max-width: 600px) {
+  .modal {
+    padding: 10px;
+  }
+
+  .modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+img {
+  max-width: 100%;
+  display: block;
+}
