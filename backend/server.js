@@ -325,11 +325,21 @@ app.get('/api/products/:id', async (req, res) => {
 
 app.post('/api/products', verifyToken, checkRole('seller'), async (req, res) => {
   try {
-    const { name, category, price, description, stock, image } = req.body;
+    
+      if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+     if (!mongoose.Types.ObjectId.isValid(req.user.id)) {
+      return res.status(400).json({ error: "Invalid seller ID" });
+    }
+
+
+    let { name, category, price, description, stock, image } = req.body;
 
     if (!name || !category || !price || !description) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
+    
     name = name.trim();
     description = description.trim();
 
