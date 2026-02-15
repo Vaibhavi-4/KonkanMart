@@ -683,6 +683,10 @@ function displayOrders(orders) {
         ordersList.innerHTML = '<p>No orders yet</p>';
         return;
     }
+
+     orders.sort((a, b) => {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+    });
     
     orders.forEach(order => {
         const orderCard = document.createElement('div');
