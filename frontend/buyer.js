@@ -85,6 +85,9 @@ function displayProducts(products) {
         card.style.display = 'flex';
         card.style.flexDirection = 'column';
         card.style.alignItems = 'center';
+        if (product.stock === 0) {
+        card.style.opacity = "0.7";
+    }
         card.setAttribute('data-seller-id', product.sellerId || '');
 
         // Seller info (if available)
@@ -105,14 +108,29 @@ ${product.image ? `<img src="${product.image.replace('http://localhost:3000', wi
             <div class="category">${product.category}</div>
             <div class="price">₹${product.price}</div>
             <div class="description" style="margin:5px 0;">${product.description}</div>
-            <div style="font-size:12px;color:#666;">Stock: ${product.stock}</div>
+<div style="font-size:12px;color:#666;">
+  ${product.stock === 0
+    ? '<span style="color:red;font-weight:600;">Out of Stock</span>'
+    : `Stock: ${product.stock}`
+  }
+</div>
             ${sellerInfo}
             <div style="margin-top:10px; display:flex; align-items:center; gap:10px;">
-                <input type="number" id="qty-${product.id}" value="1" min="1" max="${product.stock}" 
-                       onchange="validateQuantity('${product.id}', ${product.stock})" 
-                       onkeyup="validateQuantity('${product.id}', ${product.stock})"
-                       style="width:60px; padding:5px;">
-                <button onclick="addToCart('${product.id}')">Add to Cart</button>
+                <input type="number"
+       id="qty-${product.id}"
+       value="1"
+       min="1"
+       max="${product.stock}"
+       ${product.stock === 0 ? 'disabled' : ''}
+       onchange="validateQuantity('${product.id}', ${product.stock})"
+       onkeyup="validateQuantity('${product.id}', ${product.stock})"
+       style="width:60px; padding:5px;">
+
+<button 
+    onclick="addToCart('${product.id}')"
+    ${product.stock === 0 ? 'disabled style="opacity:0.6;cursor:not-allowed;"' : ''}>
+    ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+</button>
             </div>
         `;
 
