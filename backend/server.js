@@ -232,7 +232,7 @@ app.post('/api/auth/forgot-password', async (req, res) => {
     user.resetTokenExpiry = Date.now() + 3600000; // 1 hour
     await user.save();
 
-const resetLink = `${process.env.CLIENT_URL}/reset-password.html?token=${token}`;
+const resetLink = `${process.env.CLIENT_URL}/forgotPassword.html?token=${token}`;
 
     await transporter.sendMail({
       to: user.email,
