@@ -103,6 +103,10 @@ app.post('/api/auth/register', async (req, res) => {
     if (!username || !email || !password || !role) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
+    if (password.length < 6) {
+  return res.status(400).json({ error: 'Password must be at least 6 characters' });
+}
+
 
     if (!['buyer', 'seller'].includes(role)) {
       return res.status(400).json({ error: 'Invalid role. Must be buyer or seller' });
@@ -159,11 +163,17 @@ app.post('/api/auth/register', async (req, res) => {
 
 app.post('/api/auth/login', async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const username = req.body.username?.trim();
+const password = req.body.password?.trim();
+
 
     if (!username || !password) {
       return res.status(400).json({ error: 'Username and password required' });
     }
+    if (password.length < 6) {
+  return res.status(401).json({ error: 'Invalid credentials' });
+}
+
 
     const user = await User.findOne({ username });
     if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -203,7 +213,11 @@ app.put('/api/users/:id', verifyToken, upload.single("profilePhoto"), async (req
 
     const { name, email, phone, password } = req.body;
 
-    const updateData = { name, email };
+    const updateData = {};
+
+if (name) updateData.name = name;
+if (email) updateData.email = email;
+
 
     if (phone) updateData.contactInfo = phone; // FIX: phone mapping
 

@@ -71,14 +71,19 @@ function toggleSellerFields() {
 
 // Login function
 async function login() {
-    const username = document.getElementById('loginUsername').value;
-    const password = document.getElementById('loginPassword').value;
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
     const errorDiv = document.getElementById('errorMessage');
     
     if (!username || !password) {
         errorDiv.textContent = 'Please enter username and password';
         return;
     }
+    if (password.length < 6) {
+    errorDiv.textContent = "Invalid credentials";
+    return;
+}
+
     
     try {
         const response = await fetch(`${window.API_BASE}/auth/login`, {
@@ -125,13 +130,35 @@ async function register() {
         errorDiv.textContent = 'Please fill all required fields';
         return;
     }
+    if (password.length < 6) {
+    errorDiv.textContent = "Password must be at least 6 characters";
+    return;
+}
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+if (!emailRegex.test(email)) {
+    errorDiv.textContent = "Please enter a valid email address";
+    return;
+}
+
+
 
     const registerData = { username, email, password, role, name };
 
     if (role === 'seller') {
-        registerData.businessName = document.getElementById('businessName').value;
-        registerData.contactInfo = document.getElementById('contactInfo').value;
-        registerData.paymentInfo = document.getElementById('paymentInfo').value;
+        const businessName = document.getElementById('businessName').value.trim();
+const contactInfo = document.getElementById('contactInfo').value.trim();
+const paymentInfo = document.getElementById('paymentInfo').value.trim();
+
+if (!businessName || !contactInfo || !paymentInfo) {
+    errorDiv.textContent = "Please fill all seller details";
+    return;
+}
+
+       registerData.businessName = businessName;
+registerData.contactInfo = contactInfo;
+registerData.paymentInfo = paymentInfo;
+
     }
 
     try {
