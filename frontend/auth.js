@@ -3,6 +3,31 @@ if (!window.API_BASE) {
 window.API_BASE = `${window.location.origin}/api`;
 }
 
+// ===== VALIDATION HELPERS =====
+
+function isValidEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+}
+
+function isValidPassword(password) {
+    return password.length >= 6;
+}
+
+function isValidUsername(username) {
+    return username.length >= 3;
+}
+
+function showError(message) {
+    const errorDiv = document.getElementById('errorMessage');
+    if (errorDiv) errorDiv.textContent = message;
+}
+
+function clearError() {
+    const errorDiv = document.getElementById('errorMessage');
+    if (errorDiv) errorDiv.textContent = '';
+}
+
 // Check if user is authenticated
 function checkAuth() {
     const token = localStorage.getItem('token');
@@ -124,22 +149,28 @@ async function register() {
         return;
     }
 
-    errorDiv.textContent = "";
+    clearError();
 
-    if (!username || !email || !password || !name) {
-        errorDiv.textContent = 'Please fill all required fields';
-        return;
-    }
-    if (password.length < 6) {
-    errorDiv.textContent = "Password must be at least 6 characters";
+if (!username || !email || !password || !name) {
+    showError('Please fill all required fields');
     return;
 }
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-if (!emailRegex.test(email)) {
-    errorDiv.textContent = "Please enter a valid email address";
+if (!isValidUsername(username)) {
+    showError('Username must be at least 3 characters');
     return;
 }
+
+if (!isValidEmail(email)) {
+    showError('Please enter a valid email address');
+    return;
+}
+
+if (!isValidPassword(password)) {
+    showError('Password must be at least 6 characters');
+    return;
+}
+
 
 
 
@@ -230,4 +261,42 @@ document.addEventListener('keydown', function (e) {
             register();
         }
     }
+});
+// ===== REAL-TIME VALIDATION =====
+document.addEventListener('DOMContentLoaded', function () {
+
+    const emailInput = document.getElementById('registerEmail');
+    const passwordInput = document.getElementById('registerPassword');
+    const usernameInput = document.getElementById('registerUsername');
+
+    if (emailInput) {
+        emailInput.addEventListener('input', function () {
+            if (emailInput.value && !isValidEmail(emailInput.value)) {
+                showError('Invalid email format');
+            } else {
+                clearError();
+            }
+        });
+    }
+
+    if (passwordInput) {
+        passwordInput.addEventListener('input', function () {
+            if (passwordInput.value && !isValidPassword(passwordInput.value)) {
+                showError('Password must be at least 6 characters');
+            } else {
+                clearError();
+            }
+        });
+    }
+
+    if (usernameInput) {
+        usernameInput.addEventListener('input', function () {
+            if (usernameInput.value && !isValidUsername(usernameInput.value)) {
+                showError('Username must be at least 3 characters');
+            } else {
+                clearError();
+            }
+        });
+    }
+
 });
