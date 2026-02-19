@@ -231,7 +231,7 @@ app.post('/api/auth/forgot-password', async (req, res) => {
     user.resetTokenExpiry = Date.now() + 3600000; // 1 hour
     await user.save();
 
-    const resetLink = `http://localhost:3000/reset-password.html?token=${token}`;
+const resetLink = `${process.env.CLIENT_URL}/reset-password.html?token=${token}`;
 
     await transporter.sendMail({
       to: user.email,
@@ -271,6 +271,7 @@ app.post('/api/auth/reset-password', async (req, res) => {
     if (!user) {
       return res.status(400).json({ error: 'Invalid or expired token' });
     }
+console.log("Token received:", token);
 
     user.password = await bcrypt.hash(password, 10);
     user.resetToken = undefined;

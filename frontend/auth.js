@@ -239,12 +239,18 @@ function getAuthHeaders() {
 }
 
 // Initialize auth check on page load
-if (window.location.pathname !== '/index.html' && window.location.pathname !== '/') {
+if (
+    window.location.pathname !== '/index.html' &&
+    window.location.pathname !== '/' &&
+    window.location.pathname !== '/reset-password.html'
+) {
     const auth = checkAuth();
     if (auth && document.getElementById('userName')) {
-        document.getElementById('userName').textContent = auth.user.name || auth.user.username;
+        document.getElementById('userName').textContent =
+            auth.user.name || auth.user.username;
     }
 }
+
 // Enable Enter key for login & register
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
