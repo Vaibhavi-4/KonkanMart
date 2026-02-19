@@ -300,3 +300,37 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 });
+function showForgotPassword() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('forgotForm').style.display = 'block';
+}
+async function sendResetLink() {
+    const email = document.getElementById('forgotEmail').value.trim();
+
+    clearError();
+
+    if (!isValidEmail(email)) {
+        showError("Please enter a valid email address");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${window.API_BASE}/auth/forgot-password`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            showError(data.error || "Something went wrong");
+            return;
+        }
+
+        showError("If this email exists, a reset link has been sent.");
+    } catch (error) {
+        showError("Server error. Try again later.");
+    }
+}

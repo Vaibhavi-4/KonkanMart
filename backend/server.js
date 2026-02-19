@@ -3,6 +3,8 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const multer = require("multer");
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 const path = require('path');
 const mongoose = require('mongoose');
 const connectDB = require('./config/database');
@@ -53,6 +55,14 @@ function verifyToken(req, res, next) {
     return res.status(401).json({ error: 'Invalid token' });
   }
 }
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'yourgmail@gmail.com',
+    pass: 'your-app-password'
+  }
+});
+
 
 // Helper function to check role
 function checkRole(...roles) {
@@ -200,6 +210,82 @@ const password = req.body.password?.trim();
     res.status(500).json({ error: 'Login failed' });
   }
 });
+app.post('/api/auth/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ error: 'Email required' });
+    }
+
+    const user = await User.findOne({ email });
+
+    // Always return same response (security)
+    if (!user) {
+      return res.json({ message: 'If email exists, reset link sent.' });
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+
+    user.resetToken = token;
+    user.resetTokenExpiry = Date.now() + 3600000; // 1 hour
+    await user.save();
+
+    const resetLink = `http://localhost:3000/reset-password.html?token=${token}`;
+
+    await transporter.sendMail({
+      to: user.email,
+      subject: 'Konkan Mart Password Reset',
+      html: `
+        <h3>Password Reset</h3>
+        <p>Click below to reset password:</p>
+        <a href="${resetLink}">${resetLink}</a>
+        <p>This link expires in 1 hour.</p>
+      `
+    });
+
+    res.json({ message: 'If email exists, reset link sent.' });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+});
+app.post('/api/auth/reset-password', async (req, res) => {
+  try {
+    const { token, password } = req.body;
+
+    if (!token || !password) {
+      return res.status(400).json({ error: 'Invalid request' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    }
+
+    const user = await User.findOne({
+      resetToken: token,
+      resetTokenExpiry: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid or expired token' });
+    }
+
+    user.password = await bcrypt.hash(password, 10);
+    user.resetToken = undefined;
+    user.resetTokenExpiry = undefined;
+
+    await user.save();
+
+    res.json({ message: 'Password reset successful' });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Reset failed' });
+  }
+});
+
 
 // Update user profile
 app.put('/api/users/:id', verifyToken, upload.single("profilePhoto"), async (req, res) => {
