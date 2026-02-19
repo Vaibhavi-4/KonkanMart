@@ -58,8 +58,9 @@ function verifyToken(req, res, next) {
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'yourgmail@gmail.com',
-    pass: 'your-app-password'
+    user: process.env.EMAIL_USER,
+pass: process.env.EMAIL_PASS
+
   }
 });
 
