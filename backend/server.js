@@ -59,7 +59,7 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: "cvaibhavi4444@gmail.com",
-pass: "bnxejdqiyokjgbsl"
+pass: "ouhibsmbnxuzuuzo"
 
   },
    connectionTimeout: 10000, // 10 seconds
@@ -231,21 +231,21 @@ app.post('/api/auth/forgot-password', async (req, res) => {
     await user.save();
 
     const resetLink = `${process.env.CLIENT_URL}/forgotPassword.html?token=${token}`;
-console.log("CLIENT_URL:", process.env.CLIENT_URL);
-console.log("Reset link:", resetLink);
-    // try {
-    //   await transporter.sendMail({
-    //     to: user.email,
-    //     subject: 'Konkan Mart Password Reset',
-    //     html: `
-    //       <h3>Password Reset</h3>
-    //       <a href="${resetLink}">${resetLink}</a>
-    //     `
-    //   });
-    //   console.log("Mail sent");
-    // } catch (mailError) {
-    //   console.error("MAIL ERROR:", mailError);
-    // }
+// console.log("CLIENT_URL:", process.env.CLIENT_URL);
+// console.log("Reset link:", resetLink);
+    try {
+      await transporter.sendMail({
+        to: user.email,
+        subject: 'Konkan Mart Password Reset',
+        html: `
+          <h3>Password Reset</h3>
+          <a href="${resetLink}">${resetLink}</a>
+        `
+      });
+      console.log("Mail sent");
+    } catch (mailError) {
+      console.error("MAIL ERROR:", mailError);
+    }
 
     return res.json({ message: 'If email exists, reset link sent.' });
 
