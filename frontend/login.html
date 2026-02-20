@@ -53,16 +53,16 @@ body {
             <!-- Login Form -->
             <form id="loginForm" class="auth-form" onsubmit="event.preventDefault(); login();">
                 <input type="text" id="loginUsername" placeholder="Username" required>
-                <p style="text-align:right; margin:5px 0;">
-
-</p>
+              
                 <input type="password" id="loginPassword" placeholder="Password" required>
+                <p style="text-align:right; margin:5px 0;"></p>
+                <a href="#" onclick="showForgotPassword()" style="font-size:12px;">
+        Forgot Password?
+    </a></p>
                 <button type="submit">Login</button>
                 <p class="info">Demo: buyer1/seller1/admin | Password: password123</p>
             </form>
-             <a href="#" onclick="showForgotPassword()" style="font-size:12px;">
-        Forgot Password?
-    </a>
+             
 
             <!-- Register Form -->
 <form id="registerForm" class="auth-form" style="display: none;" onsubmit="event.preventDefault(); register();">
