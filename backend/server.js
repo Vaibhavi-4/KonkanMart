@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const multer = require("multer");
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+// const nodemailer = require('nodemailer');
 const path = require('path');
 const mongoose = require('mongoose');
 const connectDB = require('./config/database');
@@ -12,13 +12,14 @@ const User = require('./models/User');
 const Product = require('./models/Product');
 const Order = require('./models/Order');
 const Cart = require('./models/Cart');
+const { Resend } = require('resend');
 // const sendEmail = require('./utils/sendEmail');
 
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'konkan-mart-secret-key-change-in-production';
-
+const resend = new Resend(process.env.RESEND_API_KEY);
 // Connect to MongoDB
 connectDB();
 
@@ -55,17 +56,6 @@ function verifyToken(req, res, next) {
     return res.status(401).json({ error: 'Invalid token' });
   }
 }
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: "cvaibhavi4444@gmail.com",
-pass: "ouhibsmbnxuzuuzo"
-
-  },
-   connectionTimeout: 10000, // 10 seconds
-  greetingTimeout: 10000,
-  socketTimeout: 10000
-});
 
 
 // Helper function to check role
@@ -234,14 +224,15 @@ app.post('/api/auth/forgot-password', async (req, res) => {
 // console.log("CLIENT_URL:", process.env.CLIENT_URL);
 // console.log("Reset link:", resetLink);
     try {
-      await transporter.sendMail({
-        to: "cvaibhavi4444@gmail.com",
-        subject: 'Konkan Mart Password Reset',
-        html: `
-          <h3>Password Reset</h3>
-          <a href="${resetLink}">${resetLink}</a>
-        `
-      });
+      await resend.emails.send({
+  from: 'onboarding@resend.dev',
+  to: user.email,
+  subject: 'Konkan Mart Password Reset',
+  html: `
+    <h3>Password Reset</h3>
+    <a href="${resetLink}">${resetLink}</a>
+  `
+});
       console.log("Mail sent");
     } catch (mailError) {
       console.error("MAIL ERROR:", mailError);
@@ -255,22 +246,22 @@ app.post('/api/auth/forgot-password', async (req, res) => {
   }
 });
 
-app.get("/test-email", async (req, res) => {
-  try {
-    const info = await transporter.sendMail({
-      from: "cvaibhavi4444@gmail.com",
-      to: "cvaibhavi4444@gmail.com",
-      subject: "Direct Test Email",
-      html: "<h1>If you see this, Gmail works</h1>"
-    });
+// app.get("/test-email", async (req, res) => {
+//   try {
+//     const info = await transporter.sendMail({
+//       from: "cvaibhavi4444@gmail.com",
+//       to: "cvaibhavi4444@gmail.com",
+//       subject: "Direct Test Email",
+//       html: "<h1>If you see this, Gmail works</h1>"
+//     });
 
-    console.log("EMAIL SUCCESS:", info.response);
-    res.send("Email sent successfully");
-  } catch (err) {
-    console.error("EMAIL FAILED:", err);
-    res.status(500).send("Email failed");
-  }
-});
+//     console.log("EMAIL SUCCESS:", info.response);
+//     res.send("Email sent successfully");
+//   } catch (err) {
+//     console.error("EMAIL FAILED:", err);
+//     res.status(500).send("Email failed");
+//   }
+// });
 app.post('/api/auth/reset-password', async (req, res) => {
   try {
     const { token, password } = req.body;
