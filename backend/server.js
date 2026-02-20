@@ -221,8 +221,8 @@ app.post('/api/auth/forgot-password', async (req, res) => {
     await user.save();
 
     const resetLink = `${process.env.CLIENT_URL}/forgotPassword.html?token=${token}`;
-// console.log("CLIENT_URL:", process.env.CLIENT_URL);
-// console.log("Reset link:", resetLink);
+console.log("Sending reset to:", email);
+console.log("Reset link:", resetLink);
     try {
       await resend.emails.send({
   from: 'onboarding@resend.dev',
