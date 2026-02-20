@@ -215,13 +215,8 @@ app.post('/api/auth/forgot-password', async (req, res) => {
   try {
     const { email } = req.body;
 
-    if (!email) {
-      return res.status(400).json({ error: 'Email required' });
-    }
-
     const user = await User.findOne({ email });
 
-    // Always return same response (security)
     if (!user) {
       return res.json({ message: 'If email exists, reset link sent.' });
     }
@@ -229,27 +224,30 @@ app.post('/api/auth/forgot-password', async (req, res) => {
     const token = crypto.randomBytes(32).toString('hex');
 
     user.resetToken = token;
-    user.resetTokenExpiry = Date.now() + 3600000; // 1 hour
+    user.resetTokenExpiry = Date.now() + 3600000;
     await user.save();
 
-const resetLink = `${process.env.CLIENT_URL}/forgotPassword.html?token=${token}`;
+    const resetLink = `${process.env.CLIENT_URL}/forgotPassword.html?token=${token}`;
 
-    await transporter.sendMail({
-      to: user.email,
-      subject: 'Konkan Mart Password Reset',
-      html: `
-        <h3>Password Reset</h3>
-        <p>Click below to reset password:</p>
-        <a href="${resetLink}">${resetLink}</a>
-        <p>This link expires in 1 hour.</p>
-      `
-    });
+    try {
+      await transporter.sendMail({
+        to: user.email,
+        subject: 'Konkan Mart Password Reset',
+        html: `
+          <h3>Password Reset</h3>
+          <a href="${resetLink}">${resetLink}</a>
+        `
+      });
+      console.log("Mail sent");
+    } catch (mailError) {
+      console.error("MAIL ERROR:", mailError);
+    }
 
-    res.json({ message: 'If email exists, reset link sent.' });
+    return res.json({ message: 'If email exists, reset link sent.' });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Something went wrong' });
+    console.error("MAIN ERROR:", error);
+    return res.status(500).json({ error: 'Something went wrong' });
   }
 });
 app.post('/api/auth/reset-password', async (req, res) => {
