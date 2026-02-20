@@ -240,9 +240,9 @@ function getAuthHeaders() {
 
 // Initialize auth check on page load
 if (
-    window.location.pathname !== 'index.html' &&
+    window.location.pathname !== '/index.html' &&
     window.location.pathname !== '/' &&
-    window.location.pathname !== 'reset-password.html'
+    window.location.pathname !== '/forgotPassword.html'
 ) {
     const auth = checkAuth();
     if (auth && document.getElementById('userName')) {
