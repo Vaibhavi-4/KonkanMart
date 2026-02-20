@@ -254,6 +254,23 @@ app.post('/api/auth/forgot-password', async (req, res) => {
     return res.status(500).json({ error: 'Something went wrong' });
   }
 });
+
+app.get("/test-email", async (req, res) => {
+  try {
+    const info = await transporter.sendMail({
+      from: "cvaibhavi4444@gmail.com",
+      to: "cvaibhavi4444@gmail.com",
+      subject: "Direct Test Email",
+      html: "<h1>If you see this, Gmail works</h1>"
+    });
+
+    console.log("EMAIL SUCCESS:", info.response);
+    res.send("Email sent successfully");
+  } catch (err) {
+    console.error("EMAIL FAILED:", err);
+    res.status(500).send("Email failed");
+  }
+});
 app.post('/api/auth/reset-password', async (req, res) => {
   try {
     const { token, password } = req.body;
