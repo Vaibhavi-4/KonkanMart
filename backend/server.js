@@ -494,6 +494,10 @@ app.post('/api/products', verifyToken, checkRole('seller'), async (req, res) => 
       stock: stock || 0,
       image: image || null
     });
+    const seller = await User.findById(req.user.id);
+if (!seller || seller.status !== "approved") {
+  return res.status(403).json({ error: "Seller not approved by admin" });
+}
 
     res.status(201).json(formatResponse(newProduct));
 
@@ -1013,6 +1017,18 @@ app.get('/api/admin/users', verifyToken, checkRole('admin'), async (req, res) =>
     console.error('Get users error:', error);
     res.status(500).json({ error: 'Failed to fetch users' });
   }
+});
+app.get('/api/admin/pending-sellers', verifyToken, checkRole('admin'), async (req, res) => {
+  const sellers = await User.find({ role: "seller", status: "pending" });
+  res.json(sellers);
+});
+app.put('/api/admin/approve-seller/:id', verifyToken, checkRole('admin'), async (req, res) => {
+  await User.findByIdAndUpdate(req.params.id, { status: "approved" });
+  res.json({ message: "Seller approved successfully" });
+});
+app.put('/api/admin/reject-seller/:id', verifyToken, checkRole('admin'), async (req, res) => {
+  await User.findByIdAndUpdate(req.params.id, { status: "rejected" });
+  res.json({ message: "Seller rejected successfully" });
 });
 
 // Get categories
