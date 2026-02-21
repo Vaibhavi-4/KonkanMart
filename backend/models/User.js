@@ -23,6 +23,13 @@ const userSchema = new mongoose.Schema({
     enum: ['buyer', 'seller', 'admin'],
     required: true
   },
+  status: {
+  type: String,
+  enum: ["pending", "approved", "rejected"],
+  default: function () {
+    return this.role === "seller" ? "pending" : "approved";
+  }
+},
   name: {
     type: String,
     required: true

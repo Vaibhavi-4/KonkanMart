@@ -183,6 +183,11 @@ const password = req.body.password?.trim();
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
+    if (user.role === "seller" && user.status !== "approved") {
+  return res.status(403).json({
+    error: "Your seller account is not approved by admin yet."
+  });
+}
 
     const token = jwt.sign({ 
       id: user._id.toString(), 
