@@ -91,16 +91,16 @@ function displayProducts(products) {
         card.setAttribute('data-seller-id', product.sellerId || '');
 
         // Seller info (if available)
-        let sellerInfo = '';
-        if (product.seller) {
-            sellerInfo = `
-                <div style="margin-top: 10px; padding: 8px; background: #f0f0f0; border-radius: 5px; font-size: 12px; width: 100%;">
-                    <strong>Seller:</strong> ${product.seller.businessName || 'N/A'}<br>
-                    <strong>Contact:</strong> ${product.seller.contactInfo || 'N/A'}<br>
-                    <strong>Payment:</strong> ${product.seller.paymentInfo || 'N/A'}
-                </div>
-            `;
-        }
+        // let sellerInfo = '';
+        // if (product.seller) {
+        //     sellerInfo = `
+        //         <div style="margin-top: 10px; padding: 8px; background: #f0f0f0; border-radius: 5px; font-size: 12px; width: 100%;">
+        //             <strong>Seller:</strong> ${product.seller.businessName || 'N/A'}<br>
+        //             <strong>Contact:</strong> ${product.seller.contactInfo || 'N/A'}<br>
+        //             <strong>Payment:</strong> ${product.seller.paymentInfo || 'N/A'}
+        //         </div>
+        //     `;
+        // }
 
         card.innerHTML = `
 ${product.image ? `<img src="${product.image.replace('http://localhost:3000', window.location.origin)}" alt="${product.name}" style="width:120px;height:120px;object-fit:cover;margin-bottom:10px;">` : ''}
@@ -114,7 +114,7 @@ ${product.image ? `<img src="${product.image.replace('http://localhost:3000', wi
     : `Stock: ${product.stock}`
   }
 </div>
-            ${sellerInfo}
+           
             <div style="margin-top:10px; display:flex; align-items:center; gap:10px;">
                 <input type="number"
        id="qty-${product.id}"
