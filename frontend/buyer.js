@@ -280,43 +280,24 @@ async function showCart() {
         }
         
         let total = 0;
-
-        for (const item of cart) {
-
-            // 🔒 Fetch latest stock
-            const productRes = await fetch(`${API_BASE}/products/${item.productId}`);
-            const product = await productRes.json();
-
+        cart.forEach(item => {
             const itemTotal = item.price * item.quantity;
             total += itemTotal;
             
             const cartItem = document.createElement('div');
             cartItem.className = 'cart-item';
-
             cartItem.innerHTML = `
                 <div>
                     <strong>${item.name}</strong>
-
-                    <div style="display:flex;align-items:center;gap:8px;margin:6px 0;">
-                        <button onclick="changeQuantity('${item.productId}', -1)">−</button>
-
-                        <span>${item.quantity}</span>
-
-                        <button onclick="changeQuantity('${item.productId}', 1)">+</button>
-                    </div>
-
                     <div>₹${item.price} x ${item.quantity} = ₹${itemTotal}</div>
                 </div>
-
                 <button class="btn-danger" onclick="removeFromCart('${item.productId}')">Remove</button>
             `;
-
             cartItems.appendChild(cartItem);
-        }
+        });
         
         document.getElementById('cartTotal').textContent = total.toFixed(2);
         updateCheckoutButton(cart);
-
     } catch (error) {
         console.error('Error loading cart:', error);
     }
@@ -856,53 +837,4 @@ function updateCheckoutButton(cart) {
     btn.disabled = false;
     btn.innerText = "Proceed to Checkout";
   }
-}
-async function changeQuantity(productId, change) {
-    try {
-
-        const cartRes = await fetch(`${API_BASE}/cart`, {
-            headers: getAuthHeaders()
-        });
-
-        const cart = await cartRes.json();
-        const item = cart.find(i => i.productId === productId);
-        if (!item) return;
-
-        let newQty = item.quantity + change;
-
-        if (newQty < 1) {
-            await removeFromCart(productId);
-            return;
-        }
-
-        if (newQty > 10) {
-            alert("Maximum 10 items allowed per product.");
-            return;
-        }
-
-        // 🔒 Check stock
-        const productRes = await fetch(`${API_BASE}/products/${productId}`);
-        const product = await productRes.json();
-
-        if (newQty > product.stock) {
-            alert("Insufficient stock available.");
-            return;
-        }
-
-        // Update cart
-        await fetch(`${API_BASE}/cart`, {
-            method: "POST",
-            headers: getAuthHeaders(),
-            body: JSON.stringify({
-                productId,
-                quantity: newQty
-            })
-        });
-
-        await showCart();
-        await loadCart();
-
-    } catch (error) {
-        console.error("Quantity update error:", error);
-    }
 }
