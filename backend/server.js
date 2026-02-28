@@ -183,11 +183,11 @@ const password = req.body.password?.trim();
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-    if (user.role === "seller" && user.status !== "approved") {
-  return res.status(403).json({
-    error: "Your seller account is not approved by admin yet."
-  });
-}
+//     if (user.role === "seller" && user.status !== "approved") {
+//   return res.status(403).json({
+//     error: "Your seller account is not approved by admin yet."
+//   });
+// }
 
     const token = jwt.sign({ 
       id: user._id.toString(), 
@@ -1018,18 +1018,18 @@ app.get('/api/admin/users', verifyToken, checkRole('admin'), async (req, res) =>
     res.status(500).json({ error: 'Failed to fetch users' });
   }
 });
-app.get('/api/admin/pending-sellers', verifyToken, checkRole('admin'), async (req, res) => {
-  const sellers = await User.find({ role: "seller", status: "pending" });
-  res.json(sellers);
-});
-app.put('/api/admin/approve-seller/:id', verifyToken, checkRole('admin'), async (req, res) => {
-  await User.findByIdAndUpdate(req.params.id, { status: "approved" });
-  res.json({ message: "Seller approved successfully" });
-});
-app.put('/api/admin/reject-seller/:id', verifyToken, checkRole('admin'), async (req, res) => {
-  await User.findByIdAndUpdate(req.params.id, { status: "rejected" });
-  res.json({ message: "Seller rejected successfully" });
-});
+// app.get('/api/admin/pending-sellers', verifyToken, checkRole('admin'), async (req, res) => {
+//   const sellers = await User.find({ role: "seller", status: "pending" });
+//   res.json(sellers);
+// });
+// app.put('/api/admin/approve-seller/:id', verifyToken, checkRole('admin'), async (req, res) => {
+//   await User.findByIdAndUpdate(req.params.id, { status: "approved" });
+//   res.json({ message: "Seller approved successfully" });
+// });
+// app.put('/api/admin/reject-seller/:id', verifyToken, checkRole('admin'), async (req, res) => {
+//   await User.findByIdAndUpdate(req.params.id, { status: "rejected" });
+//   res.json({ message: "Seller rejected successfully" });
+// });
 
 // Get categories
 app.get('/api/categories', (req, res) => {
@@ -1044,7 +1044,8 @@ app.get('/api/categories', (req, res) => {
     'Special Spice Pastes',
     'Bamboo & Cane Work',
     'Clay & Terracotta Items',
-    'Decor & Utility Crafts'
+    'Decor & Utility Crafts',
+    'Wooden Toys'
   ];
   res.json(categories);
 });
