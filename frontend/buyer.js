@@ -635,6 +635,7 @@ if (mode === "ONLINE") {
 
     const file = fileInput.files[0];
     const reader = new FileReader();
+
     reader.onloadend = async () => {
         const screenshotBase64 = reader.result.split(',')[1];
         try {
@@ -654,6 +655,7 @@ if (mode === "ONLINE") {
                     })
                 })
             ));
+        
 
             alert('Payment submitted successfully ✅');
             fileInput.value = '';
@@ -665,9 +667,12 @@ if (mode === "ONLINE") {
         } catch (err) {
             console.error('Payment submission error:', err);
             alert('Failed to submit payment. Please try again.');
-        }}
+        }
     };
+    
     reader.readAsDataURL(file);
+    }
+
 }
 
 
