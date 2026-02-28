@@ -468,7 +468,7 @@ ${order.paymentProof ? `
     <div style="margin-top:10px">
         <strong>Payment Screenshot:</strong><br>
         <img 
-  src="data:image/jpeg;base64,${order.paymentProof}" 
+  src="data:image/*;base64,${order.paymentProof}" 
   style="width:140px;border:1px solid #ccc;border-radius:6px"
 >
 
